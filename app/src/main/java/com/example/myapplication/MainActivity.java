@@ -9,7 +9,13 @@ import android.widget.GridLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.biometric.BiometricManager;
+import androidx.biometric.BiometricPrompt;
+import androidx.core.content.ContextCompat;
+
+import java.util.concurrent.Executor;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -79,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
     }
     private ImageButton createFingerprintButton(int buttonSize) {
         ImageButton button = new ImageButton(this);
-        button.setImageResource(R.drawable.fingerprint_icon); // Установите ресурс изображения отпечатка пальца
+        button.setImageResource(R.drawable.fingerprint_icon); // Замени ресурс изображения отпечатка пальца на WSR
         button.setScaleType(ImageView.ScaleType.CENTER_INSIDE); // Установите свойство scaleType
         button.setAdjustViewBounds(true);
         button.setBackgroundResource(R.drawable.rounded_button);
@@ -88,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Вызовите здесь метод аутентификации по отпечатку пальца
+                authenticateFingerprint(); // Вызовите здесь метод аутентификации по отпечатку пальца
             }
         });
 
@@ -97,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
 
     private ImageButton createEraseButton(int buttonSize) {
         ImageButton button = new ImageButton(this);
-        button.setImageResource(R.drawable.erase_icon); // Замените этот ресурс на вашу иконку стирания
+        button.setImageResource(R.drawable.erase_icon); // Замени этот ресурс на свою иконку стирания
         button.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
         button.setAdjustViewBounds(true);
         button.setBackgroundResource(R.drawable.rounded_button);
@@ -107,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Здесь добавьте действие по стиранию последнего символа в поле ввода
+                // Стираем написанное
                 if (pinEditText.length() > 0) {
                     pinEditText.getText().delete(pinEditText.length() - 1, pinEditText.length());
                 }
@@ -115,6 +121,44 @@ public class MainActivity extends AppCompatActivity {
         });
 
         return button;
+    }
+
+    private void authenticateFingerprint() {
+        BiometricManager biometricManager = BiometricManager.from(this);
+        if (biometricManager.canAuthenticate() == BiometricManager.BIOMETRIC_SUCCESS) {
+            BiometricPrompt.PromptInfo promptInfo = new BiometricPrompt.PromptInfo.Builder()
+                    .setTitle("Fingerprint Authentication")
+                    .setDescription("Please place your finger on the sensor")
+                    .setNegativeButtonText("Cancel")
+                    .build();
+
+            Executor executor = ContextCompat.getMainExecutor(this);
+            BiometricPrompt biometricPrompt = new BiometricPrompt(MainActivity.this, executor,
+                    new BiometricPrompt.AuthenticationCallback() {
+                        @Override
+                        public void onAuthenticationError(int errorCode, @NonNull CharSequence errString) {
+                            super.onAuthenticationError(errorCode, errString);
+                            // Обработка ошибок аутентификации
+                        }
+
+                        @Override
+                        public void onAuthenticationSucceeded(@NonNull BiometricPrompt.AuthenticationResult result) {
+                            super.onAuthenticationSucceeded(result);
+                            // Обработка успешной аутентификации
+                            // Например, переход к следующему экрану или отображение сообщения
+                        }
+
+                        @Override
+                        public void onAuthenticationFailed() {
+                            super.onAuthenticationFailed();
+                            // Обработка неудачной аутентификации, например, неправильный отпечаток пальца
+                        }
+                    });
+
+            biometricPrompt.authenticate(promptInfo);
+        } else {
+            // Биометрическая аутентификация недоступна, показать сообщение или предложить альтернативный метод аутентификации
+        }
     }
 
 
