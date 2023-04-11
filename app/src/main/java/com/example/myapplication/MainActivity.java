@@ -6,6 +6,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridLayout;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -53,7 +55,68 @@ public class MainActivity extends AppCompatActivity {
         layoutParams.setMargins(buttonMargin, buttonMargin, buttonMargin, buttonMargin); // добавьте отступы между кнопками
         zeroButton.setLayoutParams(layoutParams);
         keypadGridLayout.addView(zeroButton);
+        ImageButton fingerprintButton = createFingerprintButton(buttonSize);
+        GridLayout.Spec fpRowSpec = GridLayout.spec(3);
+        GridLayout.Spec fpColSpec = GridLayout.spec(0, 1f);
+        GridLayout.LayoutParams fpLayoutParams = new GridLayout.LayoutParams(fpRowSpec, fpColSpec);
+        fpLayoutParams.setGravity(Gravity.FILL_HORIZONTAL);
+        fpLayoutParams.width = 0;
+        fpLayoutParams.height = GridLayout.LayoutParams.WRAP_CONTENT;
+        fpLayoutParams.setMargins(buttonMargin, buttonMargin, buttonMargin, buttonMargin); // добавьте отступы между кнопками
+        fingerprintButton.setLayoutParams(fpLayoutParams);
+        keypadGridLayout.addView(fingerprintButton);
+        ImageButton eraseButton = createEraseButton(buttonSize);
+        GridLayout.Spec eraseRowSpec = GridLayout.spec(3);
+        GridLayout.Spec eraseColSpec = GridLayout.spec(2, 1f);
+        GridLayout.LayoutParams eraseLayoutParams = new GridLayout.LayoutParams(eraseRowSpec, eraseColSpec);
+        eraseLayoutParams.setGravity(Gravity.FILL_HORIZONTAL);
+        eraseLayoutParams.width = 0;
+        eraseLayoutParams.height = GridLayout.LayoutParams.WRAP_CONTENT;
+        eraseLayoutParams.setMargins(buttonMargin, buttonMargin, buttonMargin, buttonMargin);
+        eraseButton.setLayoutParams(eraseLayoutParams);
+        keypadGridLayout.addView(eraseButton);
+
     }
+    private ImageButton createFingerprintButton(int buttonSize) {
+        ImageButton button = new ImageButton(this);
+        button.setImageResource(R.drawable.fingerprint_icon); // Установите ресурс изображения отпечатка пальца
+        button.setScaleType(ImageView.ScaleType.CENTER_INSIDE); // Установите свойство scaleType
+        button.setAdjustViewBounds(true);
+        button.setBackgroundResource(R.drawable.rounded_button);
+        button.setMaxWidth(buttonSize);
+        button.setMaxHeight(buttonSize);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Вызовите здесь метод аутентификации по отпечатку пальца
+            }
+        });
+
+        return button;
+    }
+
+    private ImageButton createEraseButton(int buttonSize) {
+        ImageButton button = new ImageButton(this);
+        button.setImageResource(R.drawable.erase_icon); // Замените этот ресурс на вашу иконку стирания
+        button.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+        button.setAdjustViewBounds(true);
+        button.setBackgroundResource(R.drawable.rounded_button);
+        button.setMaxWidth(buttonSize);
+        button.setMaxHeight(buttonSize);
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Здесь добавьте действие по стиранию последнего символа в поле ввода
+                if (pinEditText.length() > 0) {
+                    pinEditText.getText().delete(pinEditText.length() - 1, pinEditText.length());
+                }
+            }
+        });
+
+        return button;
+    }
+
 
 
     private Button createButton(String text, int buttonSize) {
