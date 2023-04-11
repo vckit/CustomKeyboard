@@ -46,11 +46,12 @@ public class MainActivity extends AppCompatActivity {
             layoutParams.setGravity(Gravity.FILL_HORIZONTAL);
             layoutParams.width = 0;
             layoutParams.height = GridLayout.LayoutParams.WRAP_CONTENT;
-            layoutParams.setMargins(buttonMargin, buttonMargin, buttonMargin, buttonMargin); // добавьте отступы между кнопками
+            layoutParams.setMargins(buttonMargin, buttonMargin, buttonMargin, buttonMargin);
             button.setLayoutParams(layoutParams);
             keypadGridLayout.addView(button);
         }
 
+        // Инициализируем кнопку 0
         Button zeroButton = createButton("0", buttonSize);
         GridLayout.Spec rowSpec = GridLayout.spec(3);
         GridLayout.Spec colSpec = GridLayout.spec(1, 1f);
@@ -58,9 +59,11 @@ public class MainActivity extends AppCompatActivity {
         layoutParams.setGravity(Gravity.FILL_HORIZONTAL);
         layoutParams.width = 0;
         layoutParams.height = GridLayout.LayoutParams.WRAP_CONTENT;
-        layoutParams.setMargins(buttonMargin, buttonMargin, buttonMargin, buttonMargin); // добавьте отступы между кнопками
+        layoutParams.setMargins(buttonMargin, buttonMargin, buttonMargin, buttonMargin);
         zeroButton.setLayoutParams(layoutParams);
         keypadGridLayout.addView(zeroButton);
+
+        // Инициализируем кнопку отпечатка пальца
         ImageButton fingerprintButton = createFingerprintButton(buttonSize);
         GridLayout.Spec fpRowSpec = GridLayout.spec(3);
         GridLayout.Spec fpColSpec = GridLayout.spec(0, 1f);
@@ -68,9 +71,11 @@ public class MainActivity extends AppCompatActivity {
         fpLayoutParams.setGravity(Gravity.FILL_HORIZONTAL);
         fpLayoutParams.width = 0;
         fpLayoutParams.height = GridLayout.LayoutParams.WRAP_CONTENT;
-        fpLayoutParams.setMargins(buttonMargin, buttonMargin, buttonMargin, buttonMargin); // добавьте отступы между кнопками
+        fpLayoutParams.setMargins(buttonMargin, buttonMargin, buttonMargin, buttonMargin);
         fingerprintButton.setLayoutParams(fpLayoutParams);
         keypadGridLayout.addView(fingerprintButton);
+
+        // Инициализируем кнопку бэкспейс
         ImageButton eraseButton = createEraseButton(buttonSize);
         GridLayout.Spec eraseRowSpec = GridLayout.spec(3);
         GridLayout.Spec eraseColSpec = GridLayout.spec(2, 1f);
@@ -81,12 +86,12 @@ public class MainActivity extends AppCompatActivity {
         eraseLayoutParams.setMargins(buttonMargin, buttonMargin, buttonMargin, buttonMargin);
         eraseButton.setLayoutParams(eraseLayoutParams);
         keypadGridLayout.addView(eraseButton);
-
     }
+
     private ImageButton createFingerprintButton(int buttonSize) {
         ImageButton button = new ImageButton(this);
-        button.setImageResource(R.drawable.fingerprint_icon); // Замени ресурс изображения отпечатка пальца на WSR
-        button.setScaleType(ImageView.ScaleType.CENTER_INSIDE); // Установите свойство scaleType
+        button.setImageResource(R.drawable.fingerprint_icon);
+        button.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
         button.setAdjustViewBounds(true);
         button.setBackgroundResource(R.drawable.rounded_button);
         button.setMaxWidth(buttonSize);
@@ -94,16 +99,15 @@ public class MainActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                authenticateFingerprint(); // Вызовите здесь метод аутентификации по отпечатку пальца
+                authenticateFingerprint();
             }
         });
 
         return button;
     }
-
     private ImageButton createEraseButton(int buttonSize) {
         ImageButton button = new ImageButton(this);
-        button.setImageResource(R.drawable.erase_icon); // Замени этот ресурс на свою иконку стирания
+        button.setImageResource(R.drawable.erase_icon);
         button.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
         button.setAdjustViewBounds(true);
         button.setBackgroundResource(R.drawable.rounded_button);
@@ -122,7 +126,6 @@ public class MainActivity extends AppCompatActivity {
 
         return button;
     }
-
     private void authenticateFingerprint() {
         BiometricManager biometricManager = BiometricManager.from(this);
         if (biometricManager.canAuthenticate() == BiometricManager.BIOMETRIC_SUCCESS) {
@@ -160,9 +163,6 @@ public class MainActivity extends AppCompatActivity {
             // Биометрическая аутентификация недоступна, показать сообщение или предложить альтернативный метод аутентификации
         }
     }
-
-
-
     private Button createButton(String text, int buttonSize) {
         Button button = new Button(this);
         button.setText(text);
